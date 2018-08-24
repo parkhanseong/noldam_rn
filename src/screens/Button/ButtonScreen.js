@@ -17,27 +17,23 @@ class ButtonScreen extends React.Component {
         };
     }
 
-    onChangeText = type => ({name, age, address, habit}) => {
-        console.log(">>>> name onChangeText : " + name);
-        this.setState({
-          [type]: name,
-          [type]: age,
-          [type]: address,
-          [type]: habit
-        });
+    onChangeText = type => name => {
+    //onChangeText = type => ({ name, age, address, habit }) => {
+        //console.log(">>>> name onChangeText : " + name);
+        // this.setState({
+        //   [type]: name,
+        //   [type]: age,
+        //   [type]: address,
+        //   [type]: habit
+        //});
+        console.log(" >>>>>>> onChangeText 1111 : " + name);
+        buttonActions.transportAction({ name: name });
+        console.log(" >>>>>>> onChangeText 2222 : " + name);
       };
 
     onPress = () => {
-        
-        const { name, age, address, habit } = this.state;
         const { buttonActions } = this.props;
-
-        console.log(" >>>>>> name ButtonScree : "+ name);
-
-        buttonActions.transportAction(
-            { name, age, address, habit },
-            ( this.props.navigation.navigate('ButtonNext', {name: name}) )
-        );
+        this.props.navigation.navigate('ButtonNext');
 
         this.setState({
             name: ""
@@ -149,12 +145,15 @@ const styles = StyleSheet.create({
 //export default ButtonScreen
 
 export default connect(
-    state => ({
+    state => (
+    {
+        name : state.button.name
     //   count: state.base.count,
     //   text: state.base.text
-       // value : state.button.value
     }),
     dispatch => ({
         buttonActions: bindActionCreators(buttonActions, dispatch)
     })
   )(ButtonScreen);
+
+  
