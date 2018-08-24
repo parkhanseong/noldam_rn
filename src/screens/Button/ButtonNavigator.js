@@ -10,8 +10,8 @@ const ButtonNavigator = createStackNavigator(
         Button: {
             screen: ButtonScreen,
             navigationOptions: {
-                title: "버튼 탭 화면",
-                headerBackTitle: " header "
+                title: "프로필",
+                headerBackTitle: "프로필 수정"
             }
         },
         ButtonNext: {

@@ -20,7 +20,7 @@ class TextScreen extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: colors.background
+        backgroundColor: "white"
     },
     text: {
         fontSize: 20

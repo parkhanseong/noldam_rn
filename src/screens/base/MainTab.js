@@ -13,16 +13,16 @@ const MainTab = createBottomTabNavigator({
     Text: {
         screen: TextScreen,
         navigationOptions: {
-            tabBarLabel: '텍스트',
+            tabBarLabel: 'EXPLORE',
             tabBarIcon: ({tintColor}) => (
-                <Icon name="md-home" type="ionicon" size={28} color={tintColor}/>
+                <Icon name="search" type="evilicons" size={28} color={tintColor}/>
             )
         }
     },
     Image: {
         screen: ImageScreen,
         navigationOptions: {
-            tabBarLabel: '이미지',
+            tabBarLabel: 'TRIPS',
             tabBarIcon: ({tintColor}) => (
                 <Icon name="rainbow" type="entypo" size={28} color={tintColor}/>
             )
@@ -31,9 +31,9 @@ const MainTab = createBottomTabNavigator({
     Button: {
         screen: ButtonNavigator,
         navigationOptions: {
-            tabBarLabel: '버튼',
+            tabBarLabel: 'PROFILE',
             tabBarIcon: ({tintColor}) => (
-                <Icon name="camera" type="entypo" size={28} color={tintColor}/>
+                <Icon name="user" type="feather" size={28} color={tintColor}/>
             )
         }
     },
@@ -52,7 +52,11 @@ const MainTab = createBottomTabNavigator({
     tabBarOptions: {
         activeTintColor: colors.main,
         style: {
-            backgroundColor: 'yellow',
+            backgroundColor: 'white',
+            borderWidth: 1,
+        },
+        tabStyle: {
+            borderTopWidth: 0.5,
         }
     },
     swipeEnabled:false
