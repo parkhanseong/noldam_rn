@@ -26,6 +26,7 @@ class ButtonScreen extends React.Component {
         //   [type]: address,
         //   [type]: habit
         //});
+        const { buttonActions } = this.props;
         console.log(" >>>>>>> onChangeText 1111 : " + name);
         buttonActions.transportAction({ name: name });
         console.log(" >>>>>>> onChangeText 2222 : " + name);

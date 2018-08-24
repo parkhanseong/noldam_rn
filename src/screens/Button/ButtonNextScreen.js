@@ -3,14 +3,19 @@ import { StyleSheet, View, Text } from "react-native";
 import { colors } from "../../lib/styleUtils";
 
 class ButtonNextScreen extends React.Component {
-
   render() {
     const { navigation } = this.props;
     // const name = navigation.getParam("name");
     // const age = navigation.getParam("age");
     //const value = navigation.getParam("phone");
-    const { name } = this.props;
-    console.log(">>>>>> Next Screen NAME : " + this.props.name);
+    
+    const { name } = this.state;
+    console.log(">>>> name ButtonNextSc : " + this.state.name);
+    //const { name } = this.props;
+    console.log(">>>> name ButtonNextSc : " + name);
+    //console.log(">>>>>> Next Screen NAME this.props.name : " + this.props.name);
+    console.log(">>>>>> Next Screen NAME : " + name);
+
     return (
       <View style={styles.container}>
         <Text>입력한 데이터 : {name} </Text>

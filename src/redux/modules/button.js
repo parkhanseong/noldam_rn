@@ -13,8 +13,12 @@ const INITIAL_STATE = {
 export default handleActions(
   {
     [TRANSPORT]: (state, action) => {
-        console.log(">>>> TRANSPORT >>>>> :" + action.payload.name );
-       return { name: action.payload.name }
+       console.log(">>>> TRANSPORT >>>>> :" + action.payload.name );
+
+       return ({ name }) => ({ name: action.payload.name })
+
+
+       //return { ...state, name: action.payload.name }
         //const value = action.payload.value
         // console.log(" >>>>>>>>>>> handleAction : " + value);
         // console.log(" >>>>>>>>>>> handleAction state : " + state.console);
