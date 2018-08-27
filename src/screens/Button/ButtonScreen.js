@@ -4,6 +4,7 @@ import { colors, customStyle } from '../../lib/styleUtils'
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as buttonActions from "../../redux/modules/button";
+import { ButtonNextScreen } from "./ButtonNextScreen";
 
 class ButtonScreen extends React.Component {
     constructor(props) {
@@ -17,8 +18,9 @@ class ButtonScreen extends React.Component {
         };
     }
 
-    onChangeText = type => name => {
-    //onChangeText = type => ({ name, age, address, habit }) => {
+    //onChangeText = ( ) => {
+    onChangeText = (e) => {
+    //onChangeText = type => (name, age)  => {
         //console.log(">>>> name onChangeText : " + name);
         // this.setState({
         //   [type]: name,
@@ -26,19 +28,30 @@ class ButtonScreen extends React.Component {
         //   [type]: address,
         //   [type]: habit
         //});
+        //const { name, age, address, habit } = this.props;
+        //const { name } = this.props;
+        //const {name, age} = this.props;
+
+        console.log(">>>> e.target.value :" + e.target.value);
+        //console.log(">>>> name :" + name);
+        //console.log(">>>> age :" + age);
+        
+        //console.log(">>>> type  :" + [name]);
+        //console.log(">>>> age :" + age);
+
         const { buttonActions } = this.props;
-        console.log(" >>>>>>> onChangeText 1111 : " + name);
-        buttonActions.transportAction({ name: name });
-        console.log(" >>>>>>> onChangeText 2222 : " + name);
-      };
+        buttonActions.transport({ 
+             [e.target.name]: e.target.value 
+            // [name]: name,
+            // [age]: age,
+            // address: address,
+            // habit: habit,
+        });
+    };
 
     onPress = () => {
         const { buttonActions } = this.props;
         this.props.navigation.navigate('ButtonNext');
-
-        this.setState({
-            name: ""
-        });
     }
 
     render() {
@@ -54,7 +67,8 @@ class ButtonScreen extends React.Component {
                                 style={styles.textInput}
                                 placeholder="이름을 입력하세요"
                                 name={name}
-                                onChangeText={onChangeText("name")}
+                                value={this.state.name}
+                                onChangeText={(e) => this.onChangeText(e)}
                                 autoCapitalize="none"
                                 autoCorrect={false}
                                 returnKeyType="done"
@@ -65,7 +79,8 @@ class ButtonScreen extends React.Component {
                                 <TextInput
                                 style={styles.textInput}
                                 placeholder="나이를 입력하세요"
-                                value={age}
+                                name={age}
+                                value={this.state.age}
                                 onChangeText={onChangeText("age")}
                                 autoCapitalize="none"
                                 autoCorrect={false}
@@ -77,6 +92,7 @@ class ButtonScreen extends React.Component {
                                 <TextInput
                                 style={styles.textInput}
                                 placeholder="사는 곳을 입력하세요"
+                                name={age}
                                 value={address}
                                 onChangeText={onChangeText("address")}
                                 autoCapitalize="none"
@@ -145,16 +161,31 @@ const styles = StyleSheet.create({
 
 //export default ButtonScreen
 
+// const mapStateToProps = (state) => ({
+//     //number: state.counter.number
+//     name : state.button.name,
+// })
+
+// const mapDispatchToProps = (dispatch) => ({
+//     transport: () => dispatch(buttonActions.transport()),
+//     // decrement: () => dispatch(counterActions.decrement())
+      
+// })
+
+//export default connect(mapStateToProps, mapDispatchToProps)(ButtonScreen);
+
 export default connect(
+    //null,
     state => (
     {
-        name : state.button.name
-    //   count: state.base.count,
-    //   text: state.base.text
+        passName : state.button.name,
+        passAge : state.button.age,
+        passAdress : state.button.address,
+        passHabit : state.button.habit
     }),
-    dispatch => ({
+    dispatch  => ({
         buttonActions: bindActionCreators(buttonActions, dispatch)
     })
-  )(ButtonScreen);
+)(ButtonScreen);
 
   

@@ -1,24 +1,21 @@
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+import * as buttonActions from "../../redux/modules/button";
 import { colors } from "../../lib/styleUtils";
 
 class ButtonNextScreen extends React.Component {
   render() {
     const { navigation } = this.props;
-    // const name = navigation.getParam("name");
-    // const age = navigation.getParam("age");
-    //const value = navigation.getParam("phone");
+    const { passName, passAge, passAdress, passHabit } = this.props;
     
-    const { name } = this.state;
-    console.log(">>>> name ButtonNextSc : " + this.state.name);
-    //const { name } = this.props;
-    console.log(">>>> name ButtonNextSc : " + name);
-    //console.log(">>>>>> Next Screen NAME this.props.name : " + this.props.name);
-    console.log(">>>>>> Next Screen NAME : " + name);
-
     return (
       <View style={styles.container}>
-        <Text>입력한 데이터 : {name} </Text>
+        <Text> 이름 : {passName} </Text>
+        <Text> 나이 : {passAge} </Text>
+        <Text> 주소 : {passAdress} </Text>
+        <Text> 취미 : {passHabit} </Text>
       </View>
     );
   }
@@ -31,4 +28,19 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ButtonNextScreen;
+//export default ButtonNextScreen;
+
+export default connect(
+    state => (
+        console.log("next Screen name : " + state.button.name ),
+        console.log("next Screen age : " + state.button.age ),
+    {
+        passName : state.button.name,
+        passAge : state.button.age,
+        passAdress : state.button.address,
+        passHabit : state.button.habit
+    }),
+    dispatch => ({
+        buttonActions: bindActionCreators(buttonActions, dispatch)
+    })
+)(ButtonNextScreen);
