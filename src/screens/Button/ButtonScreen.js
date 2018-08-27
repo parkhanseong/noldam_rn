@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as buttonActions from "../../redux/modules/button";
 import { ButtonNextScreen } from "./ButtonNextScreen";
+import { List, Map } from 'immutable';
 
 class ButtonScreen extends React.Component {
     constructor(props) {
@@ -19,34 +20,39 @@ class ButtonScreen extends React.Component {
     }
 
     //onChangeText = ( ) => {
-    onChangeText = (e) => {
-    //onChangeText = type => (name, age)  => {
-        //console.log(">>>> name onChangeText : " + name);
+    // onChangeText = (e) => {
+    onChangeText = type => value  => {
+        
+        console.log(">>>> name onChangeText : " + value);
+        console.log(">>>> [name] onChangeText : " + type);
+
         // this.setState({
         //   [type]: name,
         //   [type]: age,
         //   [type]: address,
         //   [type]: habit
         //});
-        //const { name, age, address, habit } = this.props;
-        //const { name } = this.props;
-        //const {name, age} = this.props;
 
-        console.log(">>>> e.target.value :" + e.target.value);
-        //console.log(">>>> name :" + name);
-        //console.log(">>>> age :" + age);
-        
-        //console.log(">>>> type  :" + [name]);
-        //console.log(">>>> age :" + age);
+        const info_ = List(
+            [
+            Map({
+              [type]: value
+            }),
+            ]
+        );
+
+        console.log("<<< info_ : " + info_);
 
         const { buttonActions } = this.props;
-        buttonActions.transport({ 
-             [e.target.name]: e.target.value 
-            // [name]: name,
+        buttonActions.transport(
+        // {
+            // [e.target.value]: e.target.value 
             // [age]: age,
             // address: address,
             // habit: habit,
-        });
+        // }
+        info_
+        );
     };
 
     onPress = () => {
@@ -56,7 +62,7 @@ class ButtonScreen extends React.Component {
 
     render() {
     const { onPress, onChangeText } = this;
-    const { name, age, address, habit } = this.state;
+    //const { name, age, address, habit } = this.state;
 
         return (
             <View style={styles.container}>
@@ -66,9 +72,10 @@ class ButtonScreen extends React.Component {
                                 <TextInput
                                 style={styles.textInput}
                                 placeholder="이름을 입력하세요"
-                                name={name}
-                                value={this.state.name}
-                                onChangeText={(e) => this.onChangeText(e)}
+                                name="name"
+                                //onChangeText={(e) => this.onChangeText(e)}
+                                onChangeText={onChangeText("name")}
+                                //onChangeText={(e) => this.onChangeText(e.target.value)}
                                 autoCapitalize="none"
                                 autoCorrect={false}
                                 returnKeyType="done"
@@ -79,8 +86,7 @@ class ButtonScreen extends React.Component {
                                 <TextInput
                                 style={styles.textInput}
                                 placeholder="나이를 입력하세요"
-                                name={age}
-                                value={this.state.age}
+                                name="age"
                                 onChangeText={onChangeText("age")}
                                 autoCapitalize="none"
                                 autoCorrect={false}
@@ -88,12 +94,11 @@ class ButtonScreen extends React.Component {
                                 clearButtonMode="while-editing"
                                 //onEndEditing={onEndEditing}
                                 />
-                            <Text style={styles._inputBox}>사는곳</Text>
+                            {/* <Text style={styles._inputBox}>사는곳</Text>
                                 <TextInput
                                 style={styles.textInput}
                                 placeholder="사는 곳을 입력하세요"
                                 name={age}
-                                value={address}
                                 onChangeText={onChangeText("address")}
                                 autoCapitalize="none"
                                 autoCorrect={false}
@@ -105,14 +110,13 @@ class ButtonScreen extends React.Component {
                                 <TextInput
                                 style={styles.textInput}
                                 placeholder="취미를 입력하세요"
-                                value={habit}
                                 onChangeText={onChangeText("habit")}
                                 autoCapitalize="none"
                                 autoCorrect={false}
                                 returnKeyType="done"
                                 clearButtonMode="while-editing"
                                 //onEndEditing={onEndEditing}
-                                />
+                                /> */}
                         </View>
                     </View>
                             <View style={{alignItems: "center"}}>
@@ -175,14 +179,17 @@ const styles = StyleSheet.create({
 //export default connect(mapStateToProps, mapDispatchToProps)(ButtonScreen);
 
 export default connect(
-    //null,
-    state => (
-    {
-        passName : state.button.name,
-        passAge : state.button.age,
-        passAdress : state.button.address,
-        passHabit : state.button.habit
-    }),
+    null,
+//     state => (
+//     {
+//         name: { key : "name", value : "" },
+//         age: { key : "age", value: "" },
+//         // passName : state.button.name,
+//         // passAge : state.button.age,
+//         // passAdress : state.button.address,
+//         // passHabit : state.button.habit
+//     }
+// ),
     dispatch  => ({
         buttonActions: bindActionCreators(buttonActions, dispatch)
     })
