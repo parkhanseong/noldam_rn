@@ -28,13 +28,13 @@ import { createStackNavigator, StackNavigator, SwitchNavigator } from 'react-nav
 //export default LoginNavigator
 
 const AppStack = StackNavigator({ Home: LoginScreen });
-const AuthStack = StackNavigator({ SignIn: MainTab });
+const AuthStack = StackNavigator({ Login: LoginScreen });
 
 export default SwitchNavigator(
     {
       //AuthLoading: AuthLoadingScreen,
       App: AppStack,
-      Auth: AuthStack,
+      Auth: MainTab,
     },
     // {
     //   initialRouteName: 'AuthLoading',

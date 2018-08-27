@@ -32,8 +32,6 @@ const styles = StyleSheet.create({
 
 export default connect(
     state => (
-        console.log("next Screen name : " + state.button.name ),
-        console.log("next Screen age : " + state.button.age ),
     {
         passName : state.button.name,
         passAge : state.button.age,

@@ -8,51 +8,14 @@ import { ButtonNextScreen } from "./ButtonNextScreen";
 import { List, Map } from 'immutable';
 
 class ButtonScreen extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            name: "",
-            age: "",
-            address: "",
-            habit: ""
-        };
-    }
-
+    
     //onChangeText = ( ) => {
     // onChangeText = (e) => {
     onChangeText = type => value  => {
-        
-        console.log(">>>> name onChangeText : " + value);
-        console.log(">>>> [name] onChangeText : " + type);
-
-        // this.setState({
-        //   [type]: name,
-        //   [type]: age,
-        //   [type]: address,
-        //   [type]: habit
-        //});
-
-        const info_ = List(
-            [
-            Map({
-              [type]: value
-            }),
-            ]
-        );
-
-        console.log("<<< info_ : " + info_);
-
         const { buttonActions } = this.props;
-        buttonActions.transport(
-        // {
-            // [e.target.value]: e.target.value 
-            // [age]: age,
-            // address: address,
-            // habit: habit,
-        // }
-        info_
-        );
+        buttonActions.setProfile({ type, value });
+        //Imutable 활용
+        //buttonActions.setProfile({ type, value });
     };
 
     onPress = () => {
@@ -72,10 +35,7 @@ class ButtonScreen extends React.Component {
                                 <TextInput
                                 style={styles.textInput}
                                 placeholder="이름을 입력하세요"
-                                name="name"
-                                //onChangeText={(e) => this.onChangeText(e)}
                                 onChangeText={onChangeText("name")}
-                                //onChangeText={(e) => this.onChangeText(e.target.value)}
                                 autoCapitalize="none"
                                 autoCorrect={false}
                                 returnKeyType="done"
@@ -86,7 +46,6 @@ class ButtonScreen extends React.Component {
                                 <TextInput
                                 style={styles.textInput}
                                 placeholder="나이를 입력하세요"
-                                name="age"
                                 onChangeText={onChangeText("age")}
                                 autoCapitalize="none"
                                 autoCorrect={false}
@@ -162,19 +121,6 @@ const styles = StyleSheet.create({
         marginTop: 20
     }
 })
-
-//export default ButtonScreen
-
-// const mapStateToProps = (state) => ({
-//     //number: state.counter.number
-//     name : state.button.name,
-// })
-
-// const mapDispatchToProps = (dispatch) => ({
-//     transport: () => dispatch(buttonActions.transport()),
-//     // decrement: () => dispatch(counterActions.decrement())
-      
-// })
 
 //export default connect(mapStateToProps, mapDispatchToProps)(ButtonScreen);
 

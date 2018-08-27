@@ -1,38 +1,37 @@
 import { createAction, handleActions } from "redux-actions";
 import { List, Map } from 'immutable';
 
-const TRANSPORT = "button/TRANSPORT";
+const SET_PROFILE = "button/SET_PROFILE";
 
-export const transport = createAction(TRANSPORT);
+export const setProfile = createAction(SET_PROFILE);
 
 const INITIAL_STATE = {
-  //name: 0
-  type: '',
-  value: ''
+  name:'',
+  age: '',
 };
 
-//const { value } = this.props;
+//immu
+//initail_state
+// Map(
+//{
+// "profile" : [
+// ]
+//     name: '',
+//     age: ''
+// }
+
+    // prifile: Map
+
+// )
 
 export default handleActions(
   {
-
-    [TRANSPORT]: (state, { payload: { type, value } }) => {
-        const item = Map({
-          type,
-          value,
-        });
-        console.log(">>>> item.get: "+ item.get("type"));
-        return state.update('values', values => values.push(item));
-      },
-    // [TRANSPORT]: (state, action) => {
-        // console.log(">>> moduel name : " + action.payload.name,)
-        // console.log(">>> moduel age : " + action.payload.age,)
-    //     console.log("<<< info_ handleAcion : " + action.payload.info_);
-
-    //    return { 
-    //        name: action.payload.name,
-    //    }
-    // }
+    [SET_PROFILE]: (state, { payload: { type, value } }) => {
+        return {...state, [type]: value }
+    },
+    //imutable 활용
+    //return state.set('name', '가나다');
+    //return setIn["profile", type] profile 안에 type 
   },
   INITIAL_STATE
 );

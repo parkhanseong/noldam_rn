@@ -62,4 +62,13 @@ const MainTab = createBottomTabNavigator({
     swipeEnabled:false
 })
 
+
+//Tabar 숨김 처리
+// const hideTabBar = {
+//     return tabBarVisible
+// }
+
+//ButtonNavigator.navi~ = hidebar;
+
+
 export default MainTab
