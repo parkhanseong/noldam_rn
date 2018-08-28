@@ -3,6 +3,7 @@ import { StyleSheet, View, TextInput, Text, TouchableOpacity, Alert, Image } fro
 import { colors, customStyle } from '../../lib/styleUtils';
 import { Navigation, StackNavigator, createStackNavigator } from 'react-navigation';
 import { MainTab } from '../../screens/base';
+import { SignNavigator } from '../../screens/Sign';
 
 
 class LoginScreen extends React.Component {
@@ -42,6 +43,11 @@ class LoginScreen extends React.Component {
     handleAlert = () => {
         Alert.alert(null, "비밀번호 찾기");
     }
+
+    onMoveScreen = (screen) => () => {
+
+        this.props.navigation.navigate("SignUp");
+    }
     
     // 필요 없음 > 삭제
     // onEndEditing = () => {
@@ -60,7 +66,7 @@ class LoginScreen extends React.Component {
     
     render() {
         const { value, PhoneNum, secretNum, verified  } = this.state;
-        const { onChangeText, handleAlert, onEndEditing, handleGoMain } = this;
+        const { onChangeText, handleAlert, onEndEditing, handleGoMain, onMoveScreen } = this;
         const remote = 'http://img.kormedi.com/news/article/__icsFiles/afieldfile/2012/05/29/0529childer_c.jpg';
         
         // StackNavigator({
@@ -80,11 +86,11 @@ class LoginScreen extends React.Component {
                 <View style={styles.parentView}>
                     
                     {/* https: 사용해야 함 */}
-                    <Image
+                    {/* <Image
                         resizeMode="contain"
                         source={{ uri: remote }}
                         style={styles.imgBackground}
-                    /> 
+                    />  */}
                     <View>
                         <Text >휴대폰 번호</Text>
                         <TextInput 
@@ -115,18 +121,41 @@ class LoginScreen extends React.Component {
                             onEndEditing={onEndEditing}
                         />
                     </View>    
-                    <Text 
-                    style={{
-                        marginTop: 30, 
-                        textDecorationLine: 'underline', 
-                        color: 'gray',
-                        alignSelf:'center'
-                    }}
-                    onPress={handleAlert}
-                    >
-                    비밀번호 찾기
-                    </Text>
+                    {/* <View style={{
+                        flexWrap: 'wrap',
+                        marginTop: 30,
+                    }}>
+                    </View>     */}
+                    <View
+                        style={{
+                            justifyContent: 'flex-start',
+                            flexDirection: 'row',
+                            justifyContent: 'space-around',
+                            marginTop: 10,
+                            // backgroundColor: 'black',
+                            paddingHorizontal: 70,
+                        }}>
+                        <Text 
+                        style={{
+                            textDecorationLine: 'underline', 
+                            color: 'gray',
+                        }}
+                        onPress={handleAlert}
+                        >
+                        비밀번호 찾기
+                        </Text>
+                        <Text 
+                        style={{
+                            textDecorationLine: 'underline', 
+                            color: 'gray',
+                        }}
+                        onPress={onMoveScreen("sign")}
+                        >
+                        회원가입
+                        </Text>
                 </View>
+                </View>
+                
 
                 { !verified ? null : (
                     <View>
@@ -169,20 +198,20 @@ const styles = StyleSheet.create({
         //backgroundColor: 'green'
     },
     parentView: {
+        flex: 1,
+        justifyContent: 'center',
+        paddingHorizontal: 30,
         //alignItems: 'center',
         //marginTop: 100,
-        justifyContent: 'center',
         //marginHorizontal: 30,
-        paddingHorizontal:30,
         //backgroundColor: 'yellow',
-        flex: 1
     },
     textInput: {
-       // width: 300,
         height: 45,
         borderWidth: 1,
         paddingHorizontal: 10,
         marginTop: 10
+       // width: 300,
     },
     txtFindPwd: {
         
@@ -228,6 +257,6 @@ const styles = StyleSheet.create({
     }
 })
 
-
+// const SignNavigator = StackNavigator({ SignOn: SignNavigator });
 
 export default LoginScreen

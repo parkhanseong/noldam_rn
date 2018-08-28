@@ -19,15 +19,16 @@ const INITIAL_STATE = {
 //     name: '',
 //     age: ''
 // }
-
     // prifile: Map
-
 // )
 
 export default handleActions(
-  {
+  { 
     [SET_PROFILE]: (state, { payload: { type, value } }) => {
+        console.log(">>>>moudle type:" + [type]);
+        console.log(">>>>module value:" + value);
         return {...state, [type]: value }
+        //return {[type]: value}
     },
     //imutable 활용
     //return state.set('name', '가나다');
