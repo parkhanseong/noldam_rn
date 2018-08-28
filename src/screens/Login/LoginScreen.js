@@ -45,7 +45,6 @@ class LoginScreen extends React.Component {
     }
 
     onMoveScreen = (screen) => () => {
-
         this.props.navigation.navigate("SignUp");
     }
     
