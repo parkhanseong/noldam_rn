@@ -178,6 +178,7 @@ class LoginScreen extends React.Component {
                     <TouchableOpacity style={styles.footerBtn} onPress={handleGoMain}>
                         <Text style={styles.footerTxt} 
                         onPress={handleGoMain}
+                        /* disabled={false} */
                         >
                         로그인하기
                         </Text>

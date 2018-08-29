@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, View, TextInput, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import { colors } from '../../lib/styleUtils'
+import { Icon } from 'react-native-elements';
 import { createStackNavigator, StackNavigator } from "react-navigation";
 
 class SignScreen extends React.Component {
@@ -18,7 +19,6 @@ class SignScreen extends React.Component {
             verifiedHPNum_1: false, 
             verifiedHpNum_2: false,
             verifiedPwd: null,
-            // txtSecretNumNotice: "",
             //비밀번호 일치 여부 체크
             compareSecretNum: false,
             //인증번호 길이 체크
@@ -33,28 +33,10 @@ class SignScreen extends React.Component {
         }
     }
 
-    GetValueLengthFunction = (ValueHolder) => {
-        var Value = ValueHolder.length;
-        this.setState({
-                phoneNumLength : Value
-        })
-    }
-
     _onChangeText = type => value => {
-
-        // const { name, phoneNum, verifyNum, secretNum, secretNum2, 
-        //     phoneNumLength, checkName, checkPhoneNum, checkSecretNum, checkSecretNum2 } = this.state;
-        // const text = this.state[type]
-        // const { checkVerifyNum } = this.state;
-        //폰번호 글자수 첵
-        // if(type === "phoneNum"){
-        //     this.GetValueLengthFunction(value);
-        // }
-        
         this.setState({
             [type]: value,
         });
-
         //Layout 컨트롤
         this._handleLayout(type, value);
         //버튼 활성화 여부
@@ -69,6 +51,7 @@ class SignScreen extends React.Component {
             this.setState({ verifiedHPNum_2: true });
         }
     }
+    // 인증 버튼 클릭시
     _onPress = () => {
         
         const { verifyNum } = this.state;
@@ -87,20 +70,20 @@ class SignScreen extends React.Component {
         Alert.alert("비밀번호 찾기");
     }
 
-     // 다음 버튼 활성화
+     // 버튼 활성화 Method
      btnNextAvailable = (type, value) => {
         const { checkName, checkPhoneNum, checkSecretNum, checkSecretNum2 } = this.state;
 
         //이름
-        if(type === "name" && value !== "" ){
+        if(type === "name" && value !== "" ){ 
             this.setState({ checkName : true });
-        }else if(type === "name" && value !== "" ){
+        }else if(type === "name" && value !== "" ){ 
             this.setState({ checkName : false });
         }
         //인증 버튼
         if( type === "verifyNum" && value.length === 6 ){
             this.setState({ checkVerifyNum : true })
-        }else{
+        }else if( type === "verifyNum" && value.length === 6 ){
             this.setState({ checkVerifyNum : false })
         }
         //핸드폰 번호 
@@ -125,9 +108,7 @@ class SignScreen extends React.Component {
         //다음 버튼
         if( checkName === true && checkPhoneNum === true && 
             checkSecretNum === true && checkSecretNum2 === true ){
-                this.setState({
-                    verifiedDone : true
-                })
+                this.setState({ verifiedDone : true })
         }
         //비번 일치여부 텍스트 노출
         if(type === "secretNum"){
@@ -153,7 +134,7 @@ class SignScreen extends React.Component {
         }
 
     }
-
+    // '다음' 탭시 벨리데이션 실행
     checkValidation = () => {
         const { name, phoneNum, secretNum, secretNum2 } = this.state;
         
@@ -178,7 +159,6 @@ class SignScreen extends React.Component {
         if(this.checkValidation()){
             this.props.navigation.navigate('Login');
         };
-        
     }
     
     render() {
@@ -191,23 +171,27 @@ class SignScreen extends React.Component {
             <View style={styles.container}>
                 <View style={styles.parentView}>
                     <View>
-                        <Text >이름 </Text>
-                        <TextInput 
-                            style={styles.textInput}
-                            placeholder='이름을 입력해주세요'
-                            onChangeText={
-                                _onChangeText('name')
-                            }
-                            autoCorrect={false}
-                            returnKeyType='done'
-                            clearButtonMode="while-editing"
-                        />
+                        <Text >이름</Text>
+                            {/* <View style={[styles.nameContainer, 
+                                style={ postion:'absolute', justifyContent:'flex-start'}]}> */}
+                                <TextInput 
+                                    style={styles.textInput}
+                                    maxLength={6}
+                                    placeholder='이름을 입력해주세요'
+                                    onChangeText={_onChangeText('name')}
+                                    autoCorrect={false}
+                                    returnKeyType='done'
+                                    clearButtonMode="while-editing"
+                                />
+                                {/* <Icon name="rainbow" type="entypo" size={20} style={{postiotn:'absolute'}}/> */}
+                            {/* </View>     */}
                     </View>    
                     <View>
                         <Text style={styles.marginTop_1}>휴대폰 번호 </Text>
                         {/* / 글자수({this.state.phoneNumLength}) */}
                         <TextInput 
                             style={styles.textInput}
+                            maxLength={11}
                             placeholder='휴대폰 번호를 입력해주세요'
                             keyboardType='number-pad'
                             value={phoneNum}
@@ -244,7 +228,8 @@ class SignScreen extends React.Component {
                                                     </View>
                                                     <View style={styles.inputVeriNum}>
                                                         <TextInput
-                                                        style={styles.textInputVeri} 
+                                                        style={styles.textInputVeri}
+                                                        maxLength={6}
                                                         placeholder='인증번호 6자리 입력'
                                                         keyboardType='number-pad'
                                                         autoCapitalize='none'
@@ -252,11 +237,8 @@ class SignScreen extends React.Component {
                                                         onChangeText={ _onChangeText('verifyNum')}
                                                         returnKeyType='done'
                                                         clearButtonMode="while-editing"
-                                                        /* secureTextEntry={true} */
-                                                        /* onEndEditing={onEndEditing} */
                                                         >
                                                         </TextInput>
-                                                        
                                                         { checkVerifyNum ?
                                                         (<Text 
                                                         style={{color: "#FF6E40", fontSize:20}}
@@ -281,6 +263,7 @@ class SignScreen extends React.Component {
                                                 <Text style={styles.marginTop_1}>비밀번호 설정</Text>
                                                 <TextInput 
                                                     style={styles.textInput}
+                                                    maxLength={20}
                                                     placeholder='비밀번호를 입력해주세요'
                                                     keyboardType='number-pad'
                                                     onChangeText={ _onChangeText('secretNum')}
@@ -296,6 +279,7 @@ class SignScreen extends React.Component {
                                                 <Text style={styles.marginTop_1}>비밀번호 재확인</Text>
                                                 <TextInput 
                                                     style={styles.textInput}
+                                                    maxLength={20}
                                                     placeholder='비밀번호를 입력해주세요'
                                                     keyboardType='number-pad'
                                                     onChangeText={ _onChangeText('secretNum2')}
@@ -331,7 +315,7 @@ class SignScreen extends React.Component {
                         </Text>
                     </TouchableOpacity>)
                     :
-                    (<TouchableOpacity style={styles.btnNotVeriNext} onPress={handleGoNextscreen}>
+                    (<TouchableOpacity style={styles.btnNotVeriNext} onPress={handleGoNextscreen} disabled={true}>
                         <Text style={styles.footerTxt}>
                         다음
                         </Text>
@@ -358,10 +342,20 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         marginTop: 10
     },
+    nameContainer: {
+        flexDirection: 'row',
+        // borderBottomWidth: 1,
+        borderColor: '#000',
+        // position:"absolute"
+        // paddingBottom: 10,
+    },
+    inputStyle: {
+        flex: 1,
+    },
     textInputVeri: {
         height: 40,
         width: 150,
-        borderWidth: 1,
+        // borderWidth: 1,
         paddingHorizontal: 10,
         paddingVertical: 10,
         // marginTop: 10
