@@ -3,15 +3,6 @@ import { StyleSheet, View, TextInput, Text, TouchableOpacity, Alert, Image } fro
 import { colors } from '../../lib/styleUtils'
 import { createStackNavigator, StackNavigator } from "react-navigation";
 
-
-// const secretNumLayout = () => {
-//     return (
-//     )
-// }
-
-// const txtVerifyLayout = () => (
-// )
-
 class SignScreen extends React.Component {
     constructor(props) {
         super(props);
@@ -22,30 +13,27 @@ class SignScreen extends React.Component {
             phoneNum: "",
             verifyNum: "",
             secretNum: "",
-            secretNumCheck: "",
+            secretNum2: "",
+            isNullSecret: false,
             verifiedHPNum_1: false, 
             verifiedHpNum_2: false,
             verifiedPwd: null,
-            phoneNumLength: "",
-            verifiedDone: false
+            // txtSecretNumNotice: "",
+            //비밀번호 일치 여부 체크
+            compareSecretNum: false,
+            //인증번호 길이 체크
+            checkVerifyNum: false,
+            //다음 버튼 활성화 위한 체크 조건
+            checkName: false,
+            checkPhoneNum: false,
+            checkSecretNum: false,
+            checkSecretNum2: false,
+            //다음 버튼 최종 활성화 조건
+            verifiedDone: false,
         }
     }
 
     GetValueLengthFunction = (ValueHolder) => {
-    // GetValueFunction = type => (ValueHolder) => {
-        // console.log(">> type : " + type);
-        //console.log(">> type : " + value);
-
-        //이름
-        // if(type === name){
-        //     phoneNumLength = nameLengt
-        // }
-        //폰번호
-
-        //비번
-
-        // console.log(">>> phoneNumLength ceck : " + phoneNumLength);
-
         var Value = ValueHolder.length;
         this.setState({
                 phoneNumLength : Value
@@ -54,103 +42,120 @@ class SignScreen extends React.Component {
 
     _onChangeText = type => value => {
 
-        const { name, phoneNum, verifyNum, secretNum, secretNumCheck, phoneNumLength } = this.state;
-        const text = this.state[type]
-
-        console.log(">>>>> this.state[tyep] :" + text);
-        console.log(">>>>> [tyep] :" + type);
-        console.log(">>>>> [value] :" + value);
-
-        if(type === "phoneNum"){
-            this.GetValueLengthFunction(value);
-        }
+        // const { name, phoneNum, verifyNum, secretNum, secretNum2, 
+        //     phoneNumLength, checkName, checkPhoneNum, checkSecretNum, checkSecretNum2 } = this.state;
+        // const text = this.state[type]
+        // const { checkVerifyNum } = this.state;
+        //폰번호 글자수 첵
+        // if(type === "phoneNum"){
+        //     this.GetValueLengthFunction(value);
+        // }
         
         this.setState({
             [type]: value,
         });
 
-        //이름 입력, 휴대폰번호 11자리 입력 완료되면 인증 Box 노출
-        if( name !== null && value.length === 11 ){
-            this.setState({
-                [type]: value,
-                verifiedHPNum_2: true,
-            });
-        }
-
-        if( type === "secretNum" || type === "secretNumCheck"){
-            this.setState({
-                [type]: value,
-            });
-        }
-        
-        //회원가입 조건 완료시 '다음'버튼 활성화
-        if(this.btnNextcheckValidation(value)){
-            this.setState({
-                verifiedDone : true
-            })
-        }else{
-            console.log(">> false");
-        }
+        //Layout 컨트롤
+        this._handleLayout(type, value);
+        //버튼 활성화 여부
+        this.btnNextAvailable(type, value);
     }
 
-    onPress = () => {
+    _handleLayout = (type, value) => {
+        const { name } = this.state;
+
+        //이름 입력, 휴대폰번호 11자리 입력 완료되면 인증 Box 노출
+        if( name !== "" && type === "phoneNum" && value.length === 11 ){
+            this.setState({ verifiedHPNum_2: true });
+        }
+    }
+    _onPress = () => {
         
         const { verifyNum } = this.state;
-
         if( verifyNum.length === 6 ){
             this.setState({
                 verifiedPwd: true,
                 verifiedHPNum_2: false
             });
         }else{
-            Alert.alert(null, "인증번호 6자리를 입력해주세요.");
+            Alert.alert("인증번호 6자리를 입력해주세요.");
         }
 
     }
 
     handleAlert = () => {
-        Alert.alert(null, "비밀번호 찾기");
+        Alert.alert("비밀번호 찾기");
     }
 
-    onMoveScreen = (screen) => () => {
-        this.props.navigation.navigate("SignUp");
-    }
-    
-    handleGoMain = () => {
-        this.props.navigation.navigate('Auth');
-    }
-    
-    // btnNextcheckValidation = type => (value) => {
-     btnNextcheckValidation = (type, value) => {
-        const { name, phoneNum, secretNum, secretNumCheck } = this.state;
+     // 다음 버튼 활성화
+     btnNextAvailable = (type, value) => {
+        const { checkName, checkPhoneNum, checkSecretNum, checkSecretNum2 } = this.state;
 
-        // const value_ = this.state[type]
-        // console.log(">>> btnNext Vali : " + value_);
-        
-        // if(  ){
-                    
-        // }   
+        //이름
+        if(type === "name" && value !== "" ){
+            this.setState({ checkName : true });
+        }else if(type === "name" && value !== "" ){
+            this.setState({ checkName : false });
+        }
+        //인증 버튼
+        if( type === "verifyNum" && value.length === 6 ){
+            this.setState({ checkVerifyNum : true })
+        }else{
+            this.setState({ checkVerifyNum : false })
+        }
+        //핸드폰 번호 
+        if(type === "phoneNum" && value !== "" ){
+            this.setState({ checkPhoneNum : true });
+        }else if(type === "phoneNum" && value !== "" ){
+            this.setState({ checkPhoneNum : false });
+        }
+        //비번 설정
+        if(type === "secretNum" && value !== "" ){
+            this.setState({ checkSecretNum : true });
+        }else if(type === "secretNum" && value !== "" ){
+            this.setState({ checkSecretNum : false });
+        }
+        //비번 재확인
+        if(type === "secretNum2" && value !== "" ){
+            this.setState({ checkSecretNum2 : true });
+        }else if(type === "secretNum2" && value !== "" ){
+            this.setState({ checkSecretNum2 : false });
+        }
 
-            if( name.length < 2 || name.length > 6 ){
-                console.log("1");
-                return false;
-            }else if ( phoneNum.length !== 11 ){
-                console.log("2");
-                return false;
-            }else if ( secretNum.length < 8 || secretNum.length > 20 ){
-                console.log("3");
-                return false;
-            }else if ( secretNum !== secretNumCheck ){
-                console.log("4");
-                return false;
+        //다음 버튼
+        if( checkName === true && checkPhoneNum === true && 
+            checkSecretNum === true && checkSecretNum2 === true ){
+                this.setState({
+                    verifiedDone : true
+                })
+        }
+        //비번 일치여부 텍스트 노출
+        if(type === "secretNum"){
+            //텍스트 영역 노출 조건
+            if(value !== ""){
+                this.setState({ isNullSecret: true }) 
+            }else{
+                this.setState({ isNullSecret: false }) 
             }
-
-        return true;
+            //텍스트 문구 조건
+            if( value === this.state.secretNum2 ){
+                this.setState({ compareSecretNum: true }) 
+            }else{
+                this.setState({ compareSecretNum: false }) 
+            }
+        }else if(type === "secretNum2"){
+            //텍스트 문구 조건
+            if( value === this.state.secretNum ){
+                this.setState({ compareSecretNum: true }) 
+            }else{
+                this.setState({ compareSecretNum: false }) 
+            }
+        }
 
     }
 
     checkValidation = () => {
-        const { name, phoneNum, secretNum, secretNumCheck } = this.state;
+        const { name, phoneNum, secretNum, secretNum2 } = this.state;
         
         if( name.length < 2 || name.length > 6 ){
             Alert.alert("이름은 2~6자리만 가능합니다.");
@@ -161,24 +166,25 @@ class SignScreen extends React.Component {
         }else if ( secretNum.length < 8 || secretNum.length > 20 ){
             Alert.alert("비밀번호는 8~20자리만 가능합니다.");
             return false;
-        }else if ( secretNum !== secretNumCheck ){
+        }else if ( secretNum !== secretNum2 ){
             Alert.alert("입력한 비밀번호가 일치하지 않습니다.");
             return false;
         }
         return true;
     }
 
+    //다음 버튼 클릭시 > 로그인 화면으로 이동
     handleGoNextscreen = () => {
-        // const { checkValidation } = this;
         if(this.checkValidation()){
-            this.props.navigation.navigate('Introduce');
+            this.props.navigation.navigate('Login');
         };
         
     }
     
     render() {
-        const { value, name, phoneNum, secretNum, verifyNum, verifiedHPNum_1, verifiedHPNum_2, verifiedPwd, phoneNumLength, verifiedDone } = this.state;
-        const { _onChangeText, handleAlert, onEndEditing, handleGoMain, onMoveScreen, onPress, handleGoNextscreen } = this;
+        const { value, name, phoneNum, secretNum, verifyNum, verifiedHPNum_1, verifiedHPNum_2, verifiedPwd, 
+            phoneNumLength, verifiedDone, checkVerifyNum, txtSecretNumNotice, compareSecretNum, isNullSecret } = this.state;
+        const { _onChangeText, handleAlert, onEndEditing, onMoveScreen, _onPress, handleGoNextscreen } = this;
         const remote = 'http://img.kormedi.com/news/article/__icsFiles/afieldfile/2012/05/29/0529childer_c.jpg';
         
         return (
@@ -189,11 +195,8 @@ class SignScreen extends React.Component {
                         <TextInput 
                             style={styles.textInput}
                             placeholder='이름을 입력해주세요'
-                            /* value={name} */
                             onChangeText={
                                 _onChangeText('name')
-                                // (ValueHolder) => (this.GetValueFunction(ValueHolder))
-                                // () = onChangeText('name')
                             }
                             autoCorrect={false}
                             returnKeyType='done'
@@ -201,20 +204,17 @@ class SignScreen extends React.Component {
                         />
                     </View>    
                     <View>
-                        <Text style={styles.marginTop_1}>휴대폰 번호 / 글자수({this.state.phoneNumLength})</Text>
+                        <Text style={styles.marginTop_1}>휴대폰 번호 </Text>
+                        {/* / 글자수({this.state.phoneNumLength}) */}
                         <TextInput 
                             style={styles.textInput}
                             placeholder='휴대폰 번호를 입력해주세요'
                             keyboardType='number-pad'
                             value={phoneNum}
-                            onChangeText={ 
-                                _onChangeText('phoneNum')
-                                
-                            }
+                            onChangeText={_onChangeText('phoneNum')}
                             clearButtonMode="while-editing"
                             onEndEditing={onEndEditing}
                         />
-
                         {/* 인증번호 중복 */}
                         { !verifiedHPNum_1 ? ( 
                                         null  
@@ -256,12 +256,20 @@ class SignScreen extends React.Component {
                                                         /* onEndEditing={onEndEditing} */
                                                         >
                                                         </TextInput>
-                                                        <Text 
+                                                        
+                                                        { checkVerifyNum ?
+                                                        (<Text 
                                                         style={{color: "#FF6E40", fontSize:20}}
-                                                        onPress={onPress}
+                                                        onPress={_onPress}
                                                         >
-                                                            인증
-                                                        </Text>
+                                                        인증
+                                                        </Text>) : (<Text 
+                                                        style={{color: "gray", fontSize:20}}
+                                                        onPress={_onPress}
+                                                        >
+                                                        인증
+                                                        </Text>   
+                                                        )}
                                                     </View>
                                                 </View>
                                             </View>
@@ -275,7 +283,6 @@ class SignScreen extends React.Component {
                                                     style={styles.textInput}
                                                     placeholder='비밀번호를 입력해주세요'
                                                     keyboardType='number-pad'
-                                                    /* value={secretNum} */
                                                     onChangeText={ _onChangeText('secretNum')}
                                                     autoCapitalize='none'
                                                     autoCorrect={false}
@@ -291,8 +298,7 @@ class SignScreen extends React.Component {
                                                     style={styles.textInput}
                                                     placeholder='비밀번호를 입력해주세요'
                                                     keyboardType='number-pad'
-                                                    /* value={secretNum} */
-                                                    onChangeText={ _onChangeText('secretNumCheck')}
+                                                    onChangeText={ _onChangeText('secretNum2')}
                                                     autoCapitalize='none'
                                                     autoCorrect={false}
                                                     returnKeyType='done'
@@ -301,6 +307,16 @@ class SignScreen extends React.Component {
                                                     onEndEditing={onEndEditing}
                                                 />
                                             </View>
+                                                <View style={{marginTop: 10}}>
+                                                { !isNullSecret ? (
+                                                    null
+                                                ) : (
+                                                    compareSecretNum ?
+                                                   (<Text style={{color: "#FF6E40"}}>비밀번호가 일치합니다.</Text>) :
+                                                   (<Text style={{color: "#FF6E40"}}>비밀번호가 일치하지 않습니다.</Text>) 
+                                                )
+                                                }
+                                                </View>
                                         </View>
                                         )}  
                     </View>    
@@ -333,10 +349,8 @@ const styles = StyleSheet.create({
     },
     parentView: {
         flex: 1,
-        // justifyContent: 'center',
         paddingHorizontal: 30,
         paddingVertical: 30,
-        // backgroundColor: "yellow"
     },
     textInput: {
         height: 45,
@@ -381,17 +395,16 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     inputVeriNum: {
-            justifyContent: 'flex-start',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingVertical: 10,
-            paddingHorizontal: 10,
-            // backgroundColor: 'yellow'
+        justifyContent: 'flex-start',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 10,
     },
     containerVeri: {
-            backgroundColor:'white',
-            height: 100,
+        backgroundColor:'white',
+        height: 100,
     },
     imgBackground:{
         position: 'absolute',

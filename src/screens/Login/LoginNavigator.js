@@ -43,7 +43,7 @@ import { createStackNavigator, StackNavigator, createSwitchNavigator } from 'rea
 //   );
 const RootNavigator = createSwitchNavigator(
     {
-         Introduce: {
+         Login: {
             screen: LoginScreen,
             navigationOptions: {
                 header: null
