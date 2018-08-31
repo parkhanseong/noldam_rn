@@ -14,7 +14,7 @@ class LoginScreen extends React.Component {
         this.state = {
             value: "",
             //p 소문자 수정
-            PhoneNum: "",
+            phoneNum: "",
             secretNum: "",
             //(인증 체크)
             verified: false 
@@ -48,14 +48,6 @@ class LoginScreen extends React.Component {
         this.props.navigation.navigate("SignUp");
     }
     
-    // 필요 없음 > 삭제
-    // onEndEditing = () => {
-    //     //const { navigation } = this.props;
-    //     const { navigation } = this.props.navigation;
-    //     const { secretNum } = this.state;
-    //     navigate("Next", { secretNum });
-    // }
-    
     handleGoMain = () => {
         //const { navigation } = this.props.navigation;
         // const { navigation } = this.props;
@@ -64,7 +56,7 @@ class LoginScreen extends React.Component {
     }
     
     render() {
-        const { value, PhoneNum, secretNum, verified  } = this.state;
+        const { value, phoneNum, secretNum, verified  } = this.state;
         const { onChangeText, handleAlert, onEndEditing, handleGoMain, onMoveScreen } = this;
         const remote = 'http://img.kormedi.com/news/article/__icsFiles/afieldfile/2012/05/29/0529childer_c.jpg';
         
@@ -96,7 +88,7 @@ class LoginScreen extends React.Component {
                             style={styles.textInput}
                             placeholder='휴대폰 번호를 입력해주세요'
                             keyboardType='number-pad'
-                            value={PhoneNum}
+                            value={phoneNum}
                             onChangeText={onChangeText('phone')}
                             autoCapitalize='none'
                             autoCorrect={false}
@@ -120,11 +112,6 @@ class LoginScreen extends React.Component {
                             onEndEditing={onEndEditing}
                         />
                     </View>    
-                    {/* <View style={{
-                        flexWrap: 'wrap',
-                        marginTop: 30,
-                    }}>
-                    </View>     */}
                     <View
                         style={{
                             justifyContent: 'flex-start',
@@ -194,24 +181,17 @@ class LoginScreen extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        //justifyContent: 'space-between',
-        //backgroundColor: 'green'
     },
     parentView: {
         flex: 1,
         justifyContent: 'center',
         paddingHorizontal: 30,
-        //alignItems: 'center',
-        //marginTop: 100,
-        //marginHorizontal: 30,
-        //backgroundColor: 'yellow',
     },
     textInput: {
         height: 45,
         borderWidth: 1,
         paddingHorizontal: 10,
         marginTop: 10
-       // width: 300,
     },
     txtFindPwd: {
         
@@ -253,7 +233,6 @@ const styles = StyleSheet.create({
         left:0,
         bottom:0,
         right:0,
-        //resizeMode: 'cover', // or 'stretch'
     }
 })
 

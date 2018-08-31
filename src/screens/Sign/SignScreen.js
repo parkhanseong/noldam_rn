@@ -119,8 +119,6 @@ class SignScreen extends React.Component {
         const { _onChangeText, handleAlert, onEndEditing, onMoveScreen, _onPress, handleGoNextscreen } = this;
         const remote = 'http://img.kormedi.com/news/article/__icsFiles/afieldfile/2012/05/29/0529childer_c.jpg';
         
-        //style에 넣어준다. verifiedDone을 그리고 > style에 array []로 추가를 해준다. buttonStyle을
-        
         const verifiedDone = name.isValid && phone.isValid && pwd.isValid && pwdConfirm.isValid
         const buttonStyle = {
             backgroundColor: verifiedDone ? "#FF6E40" : '#999'
@@ -165,7 +163,6 @@ class SignScreen extends React.Component {
                     <View>
                         <Text style={styles.marginTop_1}>휴대폰 번호 </Text>
                         {/* / 글자수({this.state.phoneNumLength}) */}
-                            
                         <View style={[styles.textInputView, borderOptionStyle(phone.isValid)]}>    
                             <TextInput 
                                 style={[styles.textInputStyle]}
@@ -236,7 +233,6 @@ class SignScreen extends React.Component {
                                                             인증
                                                             </Text>   
                                                         </TouchableOpacity>
-                                                        
                                                     </View>
                                                 </View>
                                             </View>

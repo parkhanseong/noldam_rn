@@ -7,20 +7,20 @@ export const setSign = createAction(SET_SIGN);
 
 const INITIAL_STATE = Map({
     name: Map({
-        // value: '',
-        // isValid: null
+        value: '',
+        isValid: null
     }),
     phone: Map({
-        // value: '',
-        // isValid: null
+        value: '',
+        isValid: null
     }),
     pwd: Map({
-        // value: '',
-        // isValid: null
+        value: '',
+        isValid: null
     }),
     pwdConfirm: Map({
-        // value: '',
-        // isValid: null
+        value: '',
+        isValid: null
     })
 });
 
@@ -30,9 +30,6 @@ export default handleActions(
         const { type } = data;
         return state.set(type, fromJS(data));
     }
-    //imutable 활용
-    //return state.set('name', '가나다');
-    //return setIn["profile", type] profile 안에 type 
   },
   INITIAL_STATE
 );

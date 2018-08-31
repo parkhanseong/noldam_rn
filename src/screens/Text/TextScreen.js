@@ -9,11 +9,9 @@ import * as signActions from "../../redux/modules/sign";
 class TextScreen extends React.Component {
     render() {
         const laText = 'Last text';
-        // const { name, phone, pwd } = this.props;
         const { name, phone, pwd, pwdConfirm, nameValid, phoneValid, pwdValid, pwdConfirmValid } = this.props;
 
         return (
-
             <View style={[styles.container, {paddingVertical: 50}]}>
                     <Text> 이름:  {name} 유효성 : {nameValid ? "true" : "false"} </Text> 
                     <Text> 폰번호:  {phone} 유효성 : {phoneValid ? "true" : "false"}  </Text> 
@@ -37,25 +35,15 @@ const styles = StyleSheet.create({
 export default connect(
     (state) => 
     ({   
-        name : state.sign.getIn(['name','value']),
-        nameValid : state.sign.getIn(['name','isValid']),
-        phone : state.sign.getIn(['phone', 'value']),
-        phoneValid: state.sign.getIn(['phone','isValid']),
-        pwd : state.sign.getIn(['pwd', 'value']),
-        pwdValid : state.sign.getIn(['pwd','isValid']),
-        pwdConfirm : state.sign.getIn(['pwdConfirm', 'value']),
+        name            : state.sign.getIn(['name','value']),
+        nameValid       : state.sign.getIn(['name','isValid']),
+        phone           : state.sign.getIn(['phone', 'value']),
+        phoneValid      : state.sign.getIn(['phone','isValid']),
+        pwd             : state.sign.getIn(['pwd', 'value']),
+        pwdValid        : state.sign.getIn(['pwd','isValid']),
+        pwdConfirm      : state.sign.getIn(['pwdConfirm', 'value']),
         pwdConfirmValid : state.sign.getIn(['pwdConfirm','isValid'])
     }),
-    // {
-    //     console.log(">>>> connect 타입 확인 state.sign :" + typeof state.sign);
-    //     console.log(">>>> connect state.sign.get(name) :" + state.sign.get('name'));
-    //     console.log(">>>> connect state.sign.get([name, value]) :" + state.sign.getIn(['name', 'value']));
-    //     console.log(">>>> connect state.sign.get([name, value]) :" + state.sign.getIn(['name', 'isValid']));
-
-    //     return state;
-    // },    
-    // ({   
-    // }),
     dispatch => ({
         signActions: bindActionCreators(signActions, dispatch)
     })
