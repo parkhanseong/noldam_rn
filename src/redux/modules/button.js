@@ -10,18 +10,6 @@ const INITIAL_STATE = {
   age: '',
 };
 
-//immu
-//initail_state
-// Map(
-//{
-// "profile" : [
-// ]
-//     name: '',
-//     age: ''
-// }
-    // prifile: Map
-// )
-
 export default handleActions(
   { 
     [SET_PROFILE]: (state, { payload: { type, value } }) => {

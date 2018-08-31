@@ -1,8 +1,8 @@
 export const colors = {
-    main: "#F25130",
+    main: "#F25130", //red
     text: "#2d2d2d",
     background: "#f4f4f4",
-    border: "#2d2d2d",
+    border: "#2d2d2d", //black
     grayText: "#b3b3b3",
     grayText2: "#d1d1d1",
     grayBorder: "#e7e7e7"

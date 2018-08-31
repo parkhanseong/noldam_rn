@@ -2,6 +2,10 @@ import React from 'react'
 import { StyleSheet, View, TextInput, Text, TouchableOpacity, Alert, Image } from 'react-native';
 import { colors } from '../../lib/styleUtils'
 import { Icon } from 'react-native-elements';
+import { List, Map } from 'immutable';
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import * as signActions from "../../redux/modules/sign";
 import { createStackNavigator, StackNavigator } from "react-navigation";
 
 class SignScreen extends React.Component {
@@ -9,12 +13,26 @@ class SignScreen extends React.Component {
         super(props);
         
         this.state = {
-            value: "",
-            name: "",
-            phoneNum: "",
-            verifyNum: "",
-            secretNum: "",
-            secretNum2: "",
+            name: {
+                value: '',
+                isValid: null
+            },
+            phone: {
+                value: '',
+                isValid: null
+            },
+            pwd: {
+                value: '',
+                isValid: null
+            },
+            pwdConfirm: {
+                value: '',
+                isValid: null
+            },
+            verifyNum: {
+                value: '',
+                isValid: null
+            },
             isNullSecret: false,
             verifiedHPNum_1: false, 
             verifiedHpNum_2: false,
@@ -23,31 +41,30 @@ class SignScreen extends React.Component {
             compareSecretNum: false,
             //인증번호 길이 체크
             checkVerifyNum: false,
-            //다음 버튼 활성화 위한 체크 조건
-            checkName: false,
-            checkPhoneNum: false,
-            checkSecretNum: false,
-            checkSecretNum2: false,
             //다음 버튼 최종 활성화 조건
             verifiedDone: false,
         }
     }
 
     _onChangeText = type => value => {
+        const isValid = this.checkValidation(type, value);
+        const { signActions } = this.props;
+
+        signActions.setSign({type, value, isValid});
+
         this.setState({
-            [type]: value,
+            // [type]: {value, isValid: null},
+            [type]: {value, isValid},
         });
         //Layout 컨트롤
         this._handleLayout(type, value);
-        //버튼 활성화 여부
-        this.btnNextAvailable(type, value);
     }
 
     _handleLayout = (type, value) => {
         const { name } = this.state;
 
         //이름 입력, 휴대폰번호 11자리 입력 완료되면 인증 Box 노출
-        if( name !== "" && type === "phoneNum" && value.length === 11 ){
+        if( name !== "" && type === "phone" && value.length === 11 ){
             this.setState({ verifiedHPNum_2: true });
         }
     }
@@ -55,7 +72,7 @@ class SignScreen extends React.Component {
     _onPress = () => {
         
         const { verifyNum } = this.state;
-        if( verifyNum.length === 6 ){
+        if( verifyNum.value.length === 6 ){
             this.setState({
                 verifiedPwd: true,
                 verifiedHPNum_2: false
@@ -63,142 +80,112 @@ class SignScreen extends React.Component {
         }else{
             Alert.alert("인증번호 6자리를 입력해주세요.");
         }
-
     }
-
-    handleAlert = () => {
-        Alert.alert("비밀번호 찾기");
-    }
-
-     // 버튼 활성화 Method
-     btnNextAvailable = (type, value) => {
-        const { checkName, checkPhoneNum, checkSecretNum, checkSecretNum2 } = this.state;
-
-        //이름
-        if(type === "name" && value !== "" ){ 
-            this.setState({ checkName : true });
-        }else if(type === "name" && value !== "" ){ 
-            this.setState({ checkName : false });
-        }
-        //인증 버튼
-        if( type === "verifyNum" && value.length === 6 ){
-            this.setState({ checkVerifyNum : true })
-        }else if( type === "verifyNum" && value.length === 6 ){
-            this.setState({ checkVerifyNum : false })
-        }
-        //핸드폰 번호 
-        if(type === "phoneNum" && value !== "" ){
-            this.setState({ checkPhoneNum : true });
-        }else if(type === "phoneNum" && value !== "" ){
-            this.setState({ checkPhoneNum : false });
-        }
-        //비번 설정
-        if(type === "secretNum" && value !== "" ){
-            this.setState({ checkSecretNum : true });
-        }else if(type === "secretNum" && value !== "" ){
-            this.setState({ checkSecretNum : false });
-        }
-        //비번 재확인
-        if(type === "secretNum2" && value !== "" ){
-            this.setState({ checkSecretNum2 : true });
-        }else if(type === "secretNum2" && value !== "" ){
-            this.setState({ checkSecretNum2 : false });
-        }
-
-        //다음 버튼
-        if( checkName === true && checkPhoneNum === true && 
-            checkSecretNum === true && checkSecretNum2 === true ){
-                this.setState({ verifiedDone : true })
-        }
-        //비번 일치여부 텍스트 노출
-        if(type === "secretNum"){
-            //텍스트 영역 노출 조건
-            if(value !== ""){
-                this.setState({ isNullSecret: true }) 
-            }else{
-                this.setState({ isNullSecret: false }) 
+    
+    checkValidation = (type, value) => {
+       
+        let isValid = null
+        switch (type) {
+            case 'name':
+                isValid = value.length >= 2 && value.length <= 6
+                break;
+            case 'phone':
+                isValid = value.length === 11
+                break;
+            case 'pwd':
+                isValid = value.length >= 8 && value.length <= 20
+                break;
+            case 'pwdConfirm':
+                isValid = this.state.pwd.value === value
+                break;
+            case 'verifyNum':
+                isValid = value.length === 6
+                break;
+            default:
+                break;
             }
-            //텍스트 문구 조건
-            if( value === this.state.secretNum2 ){
-                this.setState({ compareSecretNum: true }) 
-            }else{
-                this.setState({ compareSecretNum: false }) 
-            }
-        }else if(type === "secretNum2"){
-            //텍스트 문구 조건
-            if( value === this.state.secretNum ){
-                this.setState({ compareSecretNum: true }) 
-            }else{
-                this.setState({ compareSecretNum: false }) 
-            }
-        }
-
-    }
-    // '다음' 탭시 벨리데이션 실행
-    checkValidation = () => {
-        const { name, phoneNum, secretNum, secretNum2 } = this.state;
-        
-        if( name.length < 2 || name.length > 6 ){
-            Alert.alert("이름은 2~6자리만 가능합니다.");
-            return false;
-        }else if ( phoneNum.length !== 11 ){
-            Alert.alert("핸드폰 번호는 11자리만 가능합니다.");
-            return false;
-        }else if ( secretNum.length < 8 || secretNum.length > 20 ){
-            Alert.alert("비밀번호는 8~20자리만 가능합니다.");
-            return false;
-        }else if ( secretNum !== secretNum2 ){
-            Alert.alert("입력한 비밀번호가 일치하지 않습니다.");
-            return false;
-        }
-        return true;
+        return isValid;
     }
 
     //다음 버튼 클릭시 > 로그인 화면으로 이동
     handleGoNextscreen = () => {
-        if(this.checkValidation()){
-            this.props.navigation.navigate('Login');
-        };
+            // this.props.navigation.navigate('Login');
+            this.props.navigation.navigate('Main');
     }
     
     render() {
-        const { value, name, phoneNum, secretNum, verifyNum, verifiedHPNum_1, verifiedHPNum_2, verifiedPwd, 
-            phoneNumLength, verifiedDone, checkVerifyNum, txtSecretNumNotice, compareSecretNum, isNullSecret } = this.state;
+        const { isValid, value, name, phone, pwd, pwdConfirm, verifyNum, verifiedHPNum_1, verifiedHPNum_2, verifiedPwd, 
+            phoneNumLength, checkVerifyNum, txtSecretNumNotice, compareSecretNum, isNullSecret } = this.state;
         const { _onChangeText, handleAlert, onEndEditing, onMoveScreen, _onPress, handleGoNextscreen } = this;
         const remote = 'http://img.kormedi.com/news/article/__icsFiles/afieldfile/2012/05/29/0529childer_c.jpg';
+        
+        //style에 넣어준다. verifiedDone을 그리고 > style에 array []로 추가를 해준다. buttonStyle을
+        
+        const verifiedDone = name.isValid && phone.isValid && pwd.isValid && pwdConfirm.isValid
+        const buttonStyle = {
+            backgroundColor: verifiedDone ? "#FF6E40" : '#999'
+        }
+        const borderOptionStyle = (isValid) => ({
+            borderColor: isValid || isValid === null ? "black" : "red"
+        })
+        const verifyButtonStyle = (isValid) => ({
+            color: verifyNum.isValid ? "red" : "#999"
+        })
+
+        const strPwdConfirmValid = pwdConfirm.isValid
+        ? "비밀번호가 일치합니다"
+        : "비밀번호가 일치하지 않습니다"
         
         return (
             <View style={styles.container}>
                 <View style={styles.parentView}>
-                    <View>
-                        <Text >이름</Text>
-                            {/* <View style={[styles.nameContainer, 
-                                style={ postion:'absolute', justifyContent:'flex-start'}]}> */}
-                                <TextInput 
-                                    style={styles.textInput}
-                                    maxLength={6}
-                                    placeholder='이름을 입력해주세요'
-                                    onChangeText={_onChangeText('name')}
-                                    autoCorrect={false}
-                                    returnKeyType='done'
-                                    clearButtonMode="while-editing"
-                                />
-                                {/* <Icon name="rainbow" type="entypo" size={20} style={{postiotn:'absolute'}}/> */}
-                            {/* </View>     */}
-                    </View>    
+                        <View>
+                            <Text>이름</Text>
+                                <View style={[styles.textInputView, borderOptionStyle(name.isValid)]}>
+                                    <TextInput
+                                        style={[styles.textInputStyle]}
+                                        maxLength={6}
+                                        placeholder="이름을 입력해주세요"
+                                        onChangeText={_onChangeText("name")}
+                                        autoCorrect={false}
+                                        returnKeyType="done"
+                                        clearButtonMode="while-editing"
+                                        value={name.value}
+                                    />
+                                    {name.isValid === null ? null : (
+                                        <Icon
+                                        name={name.isValid ? "check" : "rainbow"}
+                                        type="entypo"
+                                        size={20}
+                                        color={colors.main}
+                                        />
+                                    )}
+                                </View>
+                    </View> 
                     <View>
                         <Text style={styles.marginTop_1}>휴대폰 번호 </Text>
                         {/* / 글자수({this.state.phoneNumLength}) */}
-                        <TextInput 
-                            style={styles.textInput}
-                            maxLength={11}
-                            placeholder='휴대폰 번호를 입력해주세요'
-                            keyboardType='number-pad'
-                            value={phoneNum}
-                            onChangeText={_onChangeText('phoneNum')}
-                            clearButtonMode="while-editing"
-                            onEndEditing={onEndEditing}
-                        />
+                            
+                        <View style={[styles.textInputView, borderOptionStyle(phone.isValid)]}>    
+                            <TextInput 
+                                style={[styles.textInputStyle]}
+                                maxLength={11}
+                                placeholder='휴대폰 번호를 입력해주세요'
+                                keyboardType='number-pad'
+                                value={phone.value}
+                                onChangeText={_onChangeText('phone')}
+                                clearButtonMode="while-editing"
+                                onEndEditing={onEndEditing}
+                            />
+                            {phone.isValid === null ? null : (
+                                <Icon
+                                name={phone.isValid ? "check" : "rainbow"}
+                                type="entypo"
+                                size={20}
+                                color={colors.main}
+                                />
+                            )}
+                        </View>
                         {/* 인증번호 중복 */}
                         { !verifiedHPNum_1 ? ( 
                                         null  
@@ -225,7 +212,7 @@ class SignScreen extends React.Component {
                                                         <Text style={{ textDecorationLine: 'underline', color: 'gray',}}>
                                                             재발송
                                                         </Text>
-                                                    </View>
+                                                    </View> 
                                                     <View style={styles.inputVeriNum}>
                                                         <TextInput
                                                         style={styles.textInputVeri}
@@ -239,19 +226,17 @@ class SignScreen extends React.Component {
                                                         clearButtonMode="while-editing"
                                                         >
                                                         </TextInput>
-                                                        { checkVerifyNum ?
-                                                        (<Text 
-                                                        style={{color: "#FF6E40", fontSize:20}}
-                                                        onPress={_onPress}
-                                                        >
-                                                        인증
-                                                        </Text>) : (<Text 
-                                                        style={{color: "gray", fontSize:20}}
-                                                        onPress={_onPress}
-                                                        >
-                                                        인증
-                                                        </Text>   
-                                                        )}
+                                                        {/* touchable 안에 text 구현하기 disabled이 안먹히기 때문임. */}
+                                                        <TouchableOpacity
+                                                        disabled={!verifyNum.isValid}>
+                                                            <Text 
+                                                            style={[styles.textInput, verifyButtonStyle(verifyNum.isValid)]}
+                                                            onPress={_onPress}
+                                                            >
+                                                            인증
+                                                            </Text>   
+                                                        </TouchableOpacity>
+                                                        
                                                     </View>
                                                 </View>
                                             </View>
@@ -261,45 +246,60 @@ class SignScreen extends React.Component {
                                             <View>
                                             <View>
                                                 <Text style={styles.marginTop_1}>비밀번호 설정</Text>
-                                                <TextInput 
-                                                    style={styles.textInput}
-                                                    maxLength={20}
-                                                    placeholder='비밀번호를 입력해주세요'
-                                                    keyboardType='number-pad'
-                                                    onChangeText={ _onChangeText('secretNum')}
-                                                    autoCapitalize='none'
-                                                    autoCorrect={false}
-                                                    returnKeyType='done'
-                                                    clearButtonMode="while-editing"
-                                                    secureTextEntry={true}
-                                                    onEndEditing={onEndEditing}
-                                                />
+                                                    <View style={[styles.textInputView, borderOptionStyle(pwd.isValid)]}>    
+                                                        <TextInput 
+                                                            style={[styles.textInputStyle]}
+                                                            maxLength={20}
+                                                            value={pwd.value}
+                                                            placeholder='비밀번호를 입력해주세요'
+                                                            keyboardType='number-pad'
+                                                            onChangeText={ _onChangeText('pwd')}
+                                                            autoCapitalize='none'
+                                                            autoCorrect={false}
+                                                            returnKeyType='done'
+                                                            clearButtonMode="while-editing"
+                                                            secureTextEntry={true}
+                                                            onEndEditing={onEndEditing}
+                                                        />
+                                                        {pwd.isValid === null ? null : (
+                                                            <Icon
+                                                            name={pwd.isValid ? "check" : "rainbow"}
+                                                            type="entypo"
+                                                            size={20}
+                                                            color={colors.main}
+                                                            />
+                                                        )}
+                                                    </View>        
                                             </View>   
                                             <View>
                                                 <Text style={styles.marginTop_1}>비밀번호 재확인</Text>
-                                                <TextInput 
-                                                    style={styles.textInput}
-                                                    maxLength={20}
-                                                    placeholder='비밀번호를 입력해주세요'
-                                                    keyboardType='number-pad'
-                                                    onChangeText={ _onChangeText('secretNum2')}
-                                                    autoCapitalize='none'
-                                                    autoCorrect={false}
-                                                    returnKeyType='done'
-                                                    clearButtonMode="while-editing"
-                                                    secureTextEntry={true}
-                                                    onEndEditing={onEndEditing}
-                                                />
+                                                    <View style={[styles.textInputView, borderOptionStyle(pwdConfirm.isValid)]}>    
+                                                        <TextInput 
+                                                            style={[styles.textInputStyle]}
+                                                            maxLength={20}
+                                                            value={pwdConfirm.value}
+                                                            placeholder='비밀번호를 입력해주세요'
+                                                            keyboardType='number-pad'
+                                                            onChangeText={ _onChangeText('pwdConfirm')}
+                                                            autoCapitalize='none'
+                                                            autoCorrect={false}
+                                                            returnKeyType='done'
+                                                            clearButtonMode="while-editing"
+                                                            secureTextEntry={true}
+                                                            onEndEditing={onEndEditing}
+                                                        />
+                                                        {pwdConfirm.isValid === null ? null : (
+                                                            <Icon
+                                                            name={pwdConfirm.isValid ? "check" : "rainbow"}
+                                                            type="entypo"
+                                                            size={20}
+                                                            color={colors.main}
+                                                            />
+                                                        )}
+                                                    </View>    
                                             </View>
                                                 <View style={{marginTop: 10}}>
-                                                { !isNullSecret ? (
-                                                    null
-                                                ) : (
-                                                    compareSecretNum ?
-                                                   (<Text style={{color: "#FF6E40"}}>비밀번호가 일치합니다.</Text>) :
-                                                   (<Text style={{color: "#FF6E40"}}>비밀번호가 일치하지 않습니다.</Text>) 
-                                                )
-                                                }
+                                                        <Text style={{ color: "#FF6E40" }}>{strPwdConfirmValid}</Text>
                                                 </View>
                                         </View>
                                         )}  
@@ -308,19 +308,14 @@ class SignScreen extends React.Component {
                 
                 {/* Footer / '다음' button */}
                 <View >
-                { verifiedDone ?     
-                    (<TouchableOpacity style={styles.btnVeriNext} onPress={handleGoNextscreen}>
+                    <TouchableOpacity 
+                    style={[styles.btnVeriNext, buttonStyle]} 
+                    onPress={handleGoNextscreen}
+                    disabled={!verifiedDone}>
                         <Text style={styles.footerTxt}>
                         다음
                         </Text>
-                    </TouchableOpacity>)
-                    :
-                    (<TouchableOpacity style={styles.btnNotVeriNext} onPress={handleGoNextscreen} disabled={true}>
-                        <Text style={styles.footerTxt}>
-                        다음
-                        </Text>
-                    </TouchableOpacity>)
-                }    
+                    </TouchableOpacity>
                 </View> 
             </View>
         )
@@ -336,29 +331,21 @@ const styles = StyleSheet.create({
         paddingHorizontal: 30,
         paddingVertical: 30,
     },
-    textInput: {
+    textInputStyle: {
+        flex:1,
+    },
+    textInputView: {
+        flexDirection: 'row',
         height: 45,
         borderWidth: 1,
         paddingHorizontal: 10,
-        marginTop: 10
-    },
-    nameContainer: {
-        flexDirection: 'row',
-        // borderBottomWidth: 1,
-        borderColor: '#000',
-        // position:"absolute"
-        // paddingBottom: 10,
-    },
-    inputStyle: {
-        flex: 1,
+        marginTop: 10,
     },
     textInputVeri: {
         height: 40,
         width: 150,
-        // borderWidth: 1,
         paddingHorizontal: 10,
         paddingVertical: 10,
-        // marginTop: 10
     },
     txtFindPwd: {
         
@@ -445,4 +432,11 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SignScreen
+export default connect(
+    null,
+    dispatch  => ({
+        signActions: bindActionCreators(signActions, dispatch)
+    })
+)(SignScreen);
+
+// export default SignScreen
